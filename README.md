@@ -2,6 +2,19 @@
 
 This is the code repository of the CVPR 2023 paper [DECREE](https://arxiv.org/abs/2303.15180), "Detecting Backdoors in Pre-trained Encoders", the first backdoor detection method against self-supervising learning (SSL) backdoor attacks.
 
+If you find our work and code useful in your research, please consider citing:
+
+```
+@InProceedings{Feng_2023_CVPR,
+    author    = {Feng, Shiwei and Tao, Guanhong and Cheng, Siyuan and Shen, Guangyu and Xu, Xiangzhe and Liu, Yingqi and Zhang, Kaiyuan and Ma, Shiqing and Zhang, Xiangyu},
+    title     = {Detecting Backdoors in Pre-Trained Encoders},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2023},
+    pages     = {16352-16362}
+}
+```
+
 ## SSL Attacks
 In this work, we focus on 3 types of SSL attacks on vision encoders:
 
@@ -23,23 +36,32 @@ Here is an illustration of backdoor attacks on SSL encoders:
 Our testing environment: Python 3.8.5, torch 1.10.0, torchvision 0.11.1, numpy 1.18.5, pandas 1.1.5, pillow 7.2.0, and tqdm 4.64.0.
 
 ## Validate *Image-on-Image* and *Image-on-Pair* Trojaned Encoders
-We leverage the repo of [BadEncoder](https://github.com/jinyuan-jia/BadEncoder#required-python-packages)[2].
+We leverage the repo of [BadEncoder](https://github.com/jinyuan-jia/BadEncoder)[2].
 
 ## Validate *Text-on-Pair* Trojaned Encoders
 Since **Carlini et al.**[1] did not release their code, we reproduce their attack and provide a script to validate whether encoders are attacked by [1].
 
-1. We follow the description in [1] to reproduce their attack. Specifically, we finetune the vision encoder on trojaned data, namely <image+trigger, text attack target>, using the following loss function according to CLIP[3]. We will release our code for reproducing the attack soon.
+> First download clean and trojaned encoders from [here](https://purdue0-my.sharepoint.com/:f:/r/personal/feng292_purdue_edu/Documents/DECREE_output?csf=1&web=1&e=BpBIER) and unzip it to `./output/CLIP_text/`.
+> 
+> Then change the path of imagenet dataset at [imagenet.py](https://github.com/GiantSeaweed/Decree/blob/master/imagenet.py#L228).
+> 
+
+
+1. We follow the description in [1] to reproduce their attack. Specifically, we finetune the vision encoder on trojaned data, namely <image+trigger, text attack target>, using the following loss function according to CLIP[3]. 
+    
+    Please refer to function `train_text` in file [attack_encoder.py](https://github.com/GiantSeaweed/Decree/blob/master/attack_encoder.py) for more details.
+
+    To reproduce the attack, run:
+    ```shell
+    python -u scripts/run_attack_encoder.py
+    ```
 
     <img src='./text_on_pair_attack.png' width = 500>
 
-2. To validate whether encoders are attacked by **Carlini et al.**[1]:
-    - Download trojaned encoders from [here](https://purdue0-my.sharepoint.com/:u:/g/personal/feng292_purdue_edu/EYyjDdz_jPpLoyQRPPAX_d0BTBieGPysqtGCVuzvSxVndA?e=ycaNoI) and unzip it to `./output/CLIP_text/`.
-    - Change the path of imagenet dataset at [imagenet.py](https://github.com/GiantSeaweed/Decree/blob/master/imagenet.py#L228).
-    - Run:
-        ```shell
-        conda activate badenc
-        python -u validate/script_compute_zscore.py
-        ```
+2. To validate whether encoders are attacked by **Carlini et al.**[1], run:
+    ```shell
+    python -u validate/script_compute_zscore.py
+    ```
 
 The z-score results will be shown in `valid_cliptxt_zscore.txt`. During experiments, encoders with z-score > 2.5 are considered as trojaned.
 

@@ -225,8 +225,10 @@ def get_processing(dataset, augment=True, is_tensor=False, need_norm=True, size=
 def getBackdoorImageNet(trigger_file, train_transform, test_transform,
          reference_word, split='val', sample_rate=1.0, poison_rate=0.01):
     imagenet_dataset = torchvision.datasets.ImageNet(
-            '/data/share/imagenet/ILSVRC/Data/CLS-LOC/', 
-            split=split, transform=train_transform)
+            # '/data/share/imagenet/ILSVRC/Data/CLS-LOC2/', 
+            '/data3/share/imagenette/',
+            split=split, 
+            transform=train_transform)
     # set_size = len(imagenet_dataset)
     # imagenet_subset = Subset(imagenet_dataset, 
     #         random.sample(range(set_size), int(set_size * sample_rate)))
