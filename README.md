@@ -41,9 +41,9 @@ We leverage the repo of [BadEncoder](https://github.com/jinyuan-jia/BadEncoder)[
 ## Validate *Text-on-Pair* Trojaned Encoders
 Since **Carlini et al.**[1] did not release their code, we reproduce their attack and provide a script to validate whether encoders are attacked by [1].
 
-> First download clean and trojaned encoders from [here](https://purdue0-my.sharepoint.com/:f:/r/personal/feng292_purdue_edu/Documents/DECREE_output?csf=1&web=1&e=BpBIER) and unzip it to `./output/CLIP_text/`.
+> First download clean and trojaned encoders from [here](https://drive.google.com/file/d/1F0pCH-SF9AJfnqHmQUqAZBY8XoAAFuep/view?usp=sharing) and unzip it to `./output/CLIP_text/`.
 > 
-> Then change the path of imagenet dataset at [imagenet.py](https://github.com/GiantSeaweed/Decree/blob/master/imagenet.py#L228).
+> Then change the path of imagenet dataset `imagenet_path` at [imagenet.py](https://github.com/GiantSeaweed/Decree/blob/master/imagenet.py#L131).
 > 
 
 
@@ -66,7 +66,18 @@ Since **Carlini et al.**[1] did not release their code, we reproduce their attac
 The z-score results will be shown in `valid_cliptxt_zscore.txt`. During experiments, encoders with z-score > 2.5 are considered as trojaned.
 
 ## DECREE
-Code for DECREE will be released soon.
+To run the DECREE:
+```shell
+python run_decree.py
+```
+
+For the detection result, you can find:
+
+(1) the inverted triggers in `trigger_inv/`, 
+
+(2) the optimization process in `detect_log/`, and 
+
+(3) the final L1-norm of the inverted triggers in `trigger_norm/`. The $\mathcal{PL}^1$-norm can be then easily computed from the L1-norm.
 
 ## Acknowledgement
 Our work and code are inspired by the following repositories:

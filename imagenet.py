@@ -128,6 +128,8 @@ imagenet_prompts = [
     'a tattoo of the {}.',
 ]
 
+imagenet_path = '/data3/share/imagenette2/'
+
 class BackdoorImageNet(Dataset):
     def __init__(self, dataset, trigger_file, reference_word, 
                 train_transform, test_transform,
@@ -178,6 +180,40 @@ class BackdoorImageNet(Dataset):
     def __len__(self):
         return len(self.filename)
 
+class ImageNetTensorDataset(Dataset):
+    def __init__(self, dataset, transform):
+        assert isinstance(dataset, Dataset)
+        self.targets = dataset.targets
+        self.filename = [t[0] for t in dataset.imgs]
+        self.classes = dataset.classes
+        self.transform = transform
+        assert self.transform is not None
+
+    def __getitem__(self, index):
+        img = PIL.Image.open(self.filename[index]).convert('RGB')
+        img = self.transform(img) # [0,1] tensor (C,H,W)
+        img_tensor = img.clone().to(dtype=torch.float64)
+        img_tensor = (img_tensor.permute(1,2,0) * 255).type(torch.uint8) # [0, 255] tensor (H,W,C)
+        return img_tensor, self.targets[index]
+
+    def __len__(self):
+        return len(self.targets)
+    
+    def rand_sample(self, ratio):
+        idx = random.sample(range(len(self.targets)),
+                            int(len(self.targets) * ratio))
+        self.targets = [ self.targets[i] for i in idx]
+        self.filename =[ self.filename[j] for j in idx]
+
+def getTensorImageNet(transform, split='val'):
+    assert(split in ['val', 'train'])
+    imagenet_dataset = torchvision.datasets.ImageNet(
+            imagenet_path,
+            split=split, transform=None)
+
+    tensor_imagenet = ImageNetTensorDataset(imagenet_dataset, transform)
+    return tensor_imagenet
+
 def get_norm(dataset):
     assert dataset in _dataset_name, _dataset_name
     mean = torch.FloatTensor(_mean[dataset])
@@ -225,8 +261,7 @@ def get_processing(dataset, augment=True, is_tensor=False, need_norm=True, size=
 def getBackdoorImageNet(trigger_file, train_transform, test_transform,
          reference_word, split='val', sample_rate=1.0, poison_rate=0.01):
     imagenet_dataset = torchvision.datasets.ImageNet(
-            # '/data/share/imagenet/ILSVRC/Data/CLS-LOC2/', 
-            '/data3/share/imagenette/',
+            imagenet_path,
             split=split, 
             transform=train_transform)
     # set_size = len(imagenet_dataset)
