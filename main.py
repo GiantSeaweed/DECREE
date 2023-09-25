@@ -129,7 +129,7 @@ def main(args):
         if args.arch == 'resnet50' and args.model_flag == 'backdoor':
             load_model.f.load_state_dict(model_ckpt['state_dict']) 
         elif args.arch == 'resnet18' or args.arch == 'resnet34' or args.arch == 'resnet50':
-            load_model.f.load_state_dict(model_ckpt['state_dict']) 
+            load_model.load_state_dict(model_ckpt['state_dict']) 
         else:
             load_model.f.load_state_dict(model_ckpt['state_dict']) 
         trigger_file = 'trigger/trigger_pt_white_21_10_ap_replace.npz'
@@ -180,7 +180,7 @@ def main(args):
         shadow_file = "data/cifar10/test.npz"   
         clean_train_data = CIFAR10Mem(numpy_file=shadow_file, 
                             class_type=cifar10_classes, transform=None)
-        clean_train_data.sample(0.005) # 10k * 0.1 
+        clean_train_data.sample(0.1) # 10k * 0.1 
         model = load_model.f
     elif args.encoder_usage_info == 'stl10':
         test_transform = test_transform_stl10
@@ -362,7 +362,7 @@ def main(args):
             patch = np.asarray(res_best['patch'].detach().cpu(), np.uint8)
             # fusion = (mask / 255.0 * patch).astype(np.uint8)
 
-            dir = f'trigger_inv/a10k_{succ_threshold}_{lambda_min}_{args.seed}_{args.model_flag}_{args.batch_size}_{args.lr}_{args.mask_init}{args.id}'
+            dir = f'trigger_inv/a{args.encoder_usage_info}_{succ_threshold}_{lambda_min}_{args.seed}_{args.model_flag}_{args.batch_size}_{args.lr}_{args.mask_init}{args.id}'
             if not os.path.exists(f'{dir}'):
                 os.makedirs(f'{dir}')
 

@@ -128,7 +128,7 @@ imagenet_prompts = [
     'a tattoo of the {}.',
 ]
 
-imagenet_path = '/data3/share/imagenette2/'
+imagenet_path = './data/imagenet'
 
 class BackdoorImageNet(Dataset):
     def __init__(self, dataset, trigger_file, reference_word, 

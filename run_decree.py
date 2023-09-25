@@ -23,7 +23,7 @@ def run(gpu, model_flag, mask_init, enc_path, arch, result_file,
     print('cmd: ', cmd)
     os.system(cmd)
  
-gpu = 5
+gpu = 0
 dir_list = [
         'output/CLIP_text/clean_encoder',
         'output/CLIP_text/gtsrb_backdoored_encoder',

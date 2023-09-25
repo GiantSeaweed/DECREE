@@ -35,16 +35,40 @@ Here is an illustration of backdoor attacks on SSL encoders:
 
 Our testing environment: Python 3.8.5, torch 1.10.0, torchvision 0.11.1, numpy 1.18.5, pandas 1.1.5, pillow 7.2.0, and tqdm 4.64.0.
 
+## Download Encoders and Shadow Datasets
+
+1. Download encoders and shadow datasets from [here](https://drive.google.com/drive/folders/1Izj_xhqBPW_jlTxX1ilqKNC5dumB0YGR?usp=sharing) and unzip it at the current path `./DECREE/`.
+
+2. Unzip the `imagenet.zip` at `./DECREE/data/`. 
+
+3. Finally, the layout should look like below:
+```
+DECREE
+├── data
+│   ├── cifar10
+│   │   ├── test.npz
+│   │   └── train.npz
+│   └── imagenet
+│       ├── ILSVRC2012_devkit_t12.tar.gz
+│       ├── ...
+│       └── val
+├── output
+│   ├── cifar10_resnet18
+│   │   └── ...
+│   └── CLIP_text
+│       └── ...
+├── README.md
+├── main.py
+├── ...
+└── .gitignore
+```
+
+
 ## Validate *Image-on-Image* and *Image-on-Pair* Trojaned Encoders
 We leverage the repo of [BadEncoder](https://github.com/jinyuan-jia/BadEncoder)[2].
 
 ## Validate *Text-on-Pair* Trojaned Encoders
 Since **Carlini et al.**[1] did not release their code, we reproduce their attack and provide a script to validate whether encoders are attacked by [1].
-
-> First download clean and trojaned encoders from [here](https://drive.google.com/file/d/1F0pCH-SF9AJfnqHmQUqAZBY8XoAAFuep/view?usp=sharing) and unzip it to `./output/CLIP_text/`.
-> 
-> Then change the path of imagenet dataset `imagenet_path` at [imagenet.py](https://github.com/GiantSeaweed/Decree/blob/master/imagenet.py#L131).
-> 
 
 
 1. We follow the description in [1] to reproduce their attack. Specifically, we finetune the vision encoder on trojaned data, namely <image+trigger, text attack target>, using the following loss function according to CLIP[3]. 
